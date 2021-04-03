@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 /*Complete the steps in the CrazyDigitalPainting class*/
 
 public class ColorArrayDisplayer {
+
 	public static void displayColorsAsImage(Color[][] colors) {
 		JFrame window = new JFrame();
 		JLabel label = new JLabel();
