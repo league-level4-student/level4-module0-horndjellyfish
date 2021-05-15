@@ -39,7 +39,8 @@ public class ConwaysGameOfLife extends JPanel implements ActionListener{
 		
 		window = new JFrame("Conway's Game Of Life");
 		window.add(this);
-		
+		window.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+
 		inputPanel = new JPanel();
 		startStopButton = new JButton("START");
 		startStopButton.addActionListener(this);
