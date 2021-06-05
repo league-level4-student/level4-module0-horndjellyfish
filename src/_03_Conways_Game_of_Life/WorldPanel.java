@@ -21,7 +21,7 @@ public class WorldPanel extends JPanel implements MouseListener, ActionListener 
 
     //1. Create a 2D array of Cells. Do not initialize it.
 
-    Cell[][] cells;
+    private Cell[][] cells;
 
     public WorldPanel(int w, int h, int cpr) {
         setPreferredSize(new Dimension(w, h));
@@ -30,10 +30,10 @@ public class WorldPanel extends JPanel implements MouseListener, ActionListener 
         this.cellsPerRow = cpr;
 
         //2. Calculate the cell size.
-        cellSize = 10;
-        //3. Initialize the cell array to the appropriate size.
+        cellSize = cellsPerRow / w;
+        //3a. Initialize the cell array to the appropriate size.
         cells = new Cell[cellSize][cellSize];
-        //3. Iterate through the array and initialize each cell.
+        //3b. Iterate through the array and initialize each cell.
         //   Don't forget to consider the cell's dimensions when
         //   passing in the location.
         for (int i = 0; i < cells.length; i++) {
@@ -55,8 +55,9 @@ public class WorldPanel extends JPanel implements MouseListener, ActionListener 
     }
 
     private boolean randomLife() {
+        //int rand = 1+new Random().nextInt(1);
         boolean life = false;
-        Random rand = new Random(100);
+        Random rand = new Random();
         int r = rand.nextInt(100);
         if (r % 2 == 0) {
             life = true;
@@ -107,12 +108,10 @@ public class WorldPanel extends JPanel implements MouseListener, ActionListener 
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells.length; j++) {
                 livingNeighbors[i][j] = getLivingNeighbors(i, j);
+                //8. check if each cell should live or die
                 cells[i][j].liveOrDie(livingNeighbors[i][j]);
             }
         }
-
-        //8. check if each cell should live or die
-
 
         repaint();
     }
@@ -122,10 +121,58 @@ public class WorldPanel extends JPanel implements MouseListener, ActionListener 
     //   living neighbors there are of the
     //   cell identified by x and y
     public int getLivingNeighbors(int x, int y) {
-        
-        return 0;
+        int numLiving = 0;
+        if (isCorner(x, y)) {
+            //neighbors of (0, 0): cells[x+1][y], cells[x][y+1], cells[x+1][y+1]
+            //neighbors of (max, 0): cells[x-1][y], cells[x][y+1], cells[x-1][y+1]
+            //neighbors of (0, max): cells[x+1][y], cells[x][y-1], cells[x+1][y-1]
+            //neighbors of (max, max): cells[x-1][y], cells[x][y-1], cells[x-1][y-1]
+            int left;
+            if (x-1 >= 0) {
+                left = x-1;
+            } else {
+                left = 0;
+            }
+            int right;
+            for (int ii = x - 1; ii <= x + 1; ii++) {
+                for (int jj = y - 1; jj <= y + 1; jj++) {
+                    if (cells[ii][jj].isAlive) {
+                        numLiving++;
+
+                    }
+                }
+            }
+            return 3;
+        }
+        else if (isBorder(x, y)) {
+            return 5;
+        }
+        else {
+            //anything inside of this gets 8 neighbors
+            return 8;
+        }
+        //return 0;
     }
 
+    //corners are: (0, 0), (0, max), (max, 0), (max, max) these get 3 neighbors
+    private boolean isCorner(int x, int y) {
+        if ((x == 0 && y == 0) || (x == 0 && y == cellsPerRow) || (x == cellsPerRow && y == 0) || (x == cellsPerRow && y == cellsPerRow)) {
+            return true;
+        }
+        return false;
+    }
+    //borders or edges get 5 neighbors
+    //top edge: (0 < x < max, 0)
+    //left edge: (0, 0 < y < max)
+    //right edge: (max, 0 < y < max)
+    //bottom edge: (0 < x < max, max)
+    private boolean isBorder(int x, int y) {
+        if ((x > 0 && x < cellsPerRow && y == 0) || (x == 0 && y > 0 && y < cellsPerRow) ||
+                (x == cellsPerRow && y > 0 && y < cellsPerRow) || (x > 0 && x < cellsPerRow && y == cellsPerRow)) {
+            return true;
+        }
+        return false;
+    }
     @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
