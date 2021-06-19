@@ -94,10 +94,11 @@ public class WorldPanel extends JPanel implements MouseListener, ActionListener 
             for (int j = 0; j < cells.length; j++) {
                 cells[i][j].draw(g);
             }
-        }
+
         // draws grid
         g.setColor(Color.BLACK);
         g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+        }
     }
 
     //advances world one step
@@ -122,57 +123,118 @@ public class WorldPanel extends JPanel implements MouseListener, ActionListener 
     //   cell identified by x and y
     public int getLivingNeighbors(int x, int y) {
         int numLiving = 0;
-        if (isCorner(x, y)) {
-            //neighbors of (0, 0): cells[x+1][y], cells[x][y+1], cells[x+1][y+1]
-            //neighbors of (max, 0): cells[x-1][y], cells[x][y+1], cells[x-1][y+1]
-            //neighbors of (0, max): cells[x+1][y], cells[x][y-1], cells[x+1][y-1]
-            //neighbors of (max, max): cells[x-1][y], cells[x][y-1], cells[x-1][y-1]
-            int left;
-            if (x-1 >= 0) {
-                left = x-1;
-            } else {
-                left = 0;
-            }
-            int right;
-            for (int ii = x - 1; ii <= x + 1; ii++) {
-                for (int jj = y - 1; jj <= y + 1; jj++) {
-                    if (cells[ii][jj].isAlive) {
+        if (x == 0 && y == 0) {
+            //top left corner
+            for (int i = x; i <= x + 1; i++) {
+                for (int j = y; j <= y + 1; j++) {
+                    if (cells[i][j].isAlive) {
                         numLiving++;
-
                     }
                 }
             }
-            return 3;
+            return numLiving;
         }
-        else if (isBorder(x, y)) {
-            return 5;
+        else if (x == cellsPerRow && y == 0) {
+            //top right corner
+            for (int i = x - 1; i <= x; i++) {
+                for (int j = y; j <= y + 1; j++) {
+                    if (cells[i][j].isAlive) {
+                        numLiving++;
+                    }
+                }
+            }
+            return numLiving;
+        }
+        else if (x == 0 && y == cellsPerRow) {
+            //bottom left corner
+            for (int i = x; i <= x + 1; i++) {
+                for (int j = y - 1; j <= y; j++) {
+                    if (cells[i][j].isAlive) {
+                        numLiving++;
+                    }
+                }
+            }
+            return numLiving;
+        }
+        else if (x == cellsPerRow && y == cellsPerRow) {
+            //bottom right corner
+            for (int i = x - 1; i <= x; i++) {
+                for (int j = y - 1; j <= y; j++) {
+                    if (cells[i][j].isAlive) {
+                        numLiving++;
+                    }
+                }
+            }
+            return numLiving;
+        }
+        else if (y == 0) {
+            //this is the top border
+            for (int i = x - 1; i <= x + 1; i++) {
+                for (int j = y; j <= y + 1; j++) {
+                    if (cells[i][j].isAlive) {
+                        numLiving++;
+                    }
+                }
+            }
+            return numLiving;
+        }
+        else if (y == cellsPerRow) {
+            //this is the bottom border
+            for (int i = x - 1; i <= x + 1; i++) {
+                for (int j = y - 1; j <= cellsPerRow; j++) {
+                    if (cells[i][j].isAlive) {
+                        numLiving++;
+                    }
+                }
+            }
+
+            return numLiving;
+        }
+        else if (x == 0) {
+            //this is the left border
+            for (int i = x; i <= x + 1; i++) {
+                for (int j = y - 1; j <= y + 1; j++) {
+                    if (cells[i][j].isAlive) {
+                        numLiving++;
+                    }
+                }
+            }
+            return numLiving;
+        }
+        else if (x == cellsPerRow) {
+            //this is the right border
+            for (int i = x - 1; i <= cellsPerRow; i++) {
+                for (int j = y - 1; j <= y + 1; j++) {
+                    if (cells[i][j].isAlive) {
+                        numLiving++;
+                    }
+                }
+            }
+            return numLiving;
         }
         else {
-            //anything inside of this gets 8 neighbors
-            return 8;
+            //anything inside of this gets 8 possible neighbors
+            for (int i = x - 1; i <= x + 1; i++) {
+                for (int j = y - 1; j <= y + 1; j++) {
+                    if (cells[i][j].isAlive) {
+                        numLiving++;
+                    }
+                }
+            }
+            return numLiving;
         }
-        //return 0;
+
     }
 
     //corners are: (0, 0), (0, max), (max, 0), (max, max) these get 3 neighbors
-    private boolean isCorner(int x, int y) {
-        if ((x == 0 && y == 0) || (x == 0 && y == cellsPerRow) || (x == cellsPerRow && y == 0) || (x == cellsPerRow && y == cellsPerRow)) {
-            return true;
-        }
-        return false;
-    }
+
     //borders or edges get 5 neighbors
     //top edge: (0 < x < max, 0)
     //left edge: (0, 0 < y < max)
     //right edge: (max, 0 < y < max)
     //bottom edge: (0 < x < max, max)
-    private boolean isBorder(int x, int y) {
-        if ((x > 0 && x < cellsPerRow && y == 0) || (x == 0 && y > 0 && y < cellsPerRow) ||
-                (x == cellsPerRow && y > 0 && y < cellsPerRow) || (x > 0 && x < cellsPerRow && y == cellsPerRow)) {
-            return true;
-        }
-        return false;
-    }
+
+
     @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
@@ -195,7 +257,13 @@ public class WorldPanel extends JPanel implements MouseListener, ActionListener 
         //10. Use e.getX() and e.getY() to determine
         //    which cell is clicked. Then toggle
         //    the isAlive variable for that cell.
-
+        int x = e.getX();
+        int y = e.getY();
+        if (cells[x][y].isAlive) {
+            cells[x][y].isAlive = false;
+        } else if (!cells[x][y].isAlive) {
+            cells[x][y].isAlive = true;
+        }
 
         repaint();
     }

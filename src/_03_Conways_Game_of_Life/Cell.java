@@ -46,10 +46,15 @@ public class Cell implements Drawable{
 	@Override
 	public void draw(Graphics g) {
 	
+		if (isAlive) {
+		    g.fillRect(x, y, cellSize, cellSize);
+
+        } else {
+
+        }
 		
 		
 		
-		
-		
+
 	}
 }
