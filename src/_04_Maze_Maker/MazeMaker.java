@@ -35,9 +35,11 @@ public class MazeMaker{
 		//A. mark cell as visited
 			currentCell.hasBeenVisited();
 		//B. Get an ArrayList of unvisited neighbors using the current cell and the method below
-		ArrayList<> unvisited = new ArrayList();
+		ArrayList<Cell> unvisited = new ArrayList(currentCell);
 		//C. if has unvisited neighbors,
-		
+		if (unvisited > 0) {
+
+		}
 			//C1. select one at random.
 			
 			//C2. push it to the stack
