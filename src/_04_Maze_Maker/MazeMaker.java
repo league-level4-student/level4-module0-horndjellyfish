@@ -61,11 +61,11 @@ public class MazeMaker {
 
 
         //D. if all neighbors are visited
-        //if (unvisited.size() == 0) {
+        //       if (unvisited.size() == 0) {
 //			Cell popCell = uncheckedCells.pop();
 //			currentCell = popCell;
 //			selectNextPath(currentCell);
-        //   }
+//           }
         //D1. if the stack is not empty
 
         // D1a. pop a cell from the stack
@@ -81,13 +81,13 @@ public class MazeMaker {
     //   This method will check if c1 and c2 are adjacent.
     //   If they are, the walls between them are removed.
     private static void removeWalls(Cell c1, Cell c2) {
-//		if (c1.hasEastWall() && c2.hasWestWall()) {
-//			c1.setEastWall(false);
-//			c2.setWestWall(false);
-//		} else if (c1.hasWestWall() && c2.hasEastWall()) {
-//			c1.setWestWall(false);
-//			c2.setEastWall(false);
-//		}
+		if (c1.hasEastWall() && c2.hasWestWall()) {
+			c1.setEastWall(false);
+			c2.setWestWall(false);
+		} else if (c1.hasWestWall() && c2.hasEastWall()) {
+			c1.setWestWall(false);
+			c2.setEastWall(false);
+		}
     }
 
     //8. Complete the getUnvisitedNeighbors method
@@ -95,9 +95,9 @@ public class MazeMaker {
     //   to the ArrayList
     private static ArrayList<Cell> getUnvisitedNeighbors(Cell c) {
         ArrayList<Cell> allUnvisitedNeighbors = new ArrayList<>();
-//		if (!c.hasBeenVisited()) {
-//			allUnvisitedNeighbors.add(c);
-//		}
+		if (!c.hasBeenVisited()) {
+			allUnvisitedNeighbors.add(c);
+		}
         return null;
     }
 }
