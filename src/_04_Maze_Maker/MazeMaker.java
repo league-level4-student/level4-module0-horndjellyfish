@@ -44,9 +44,9 @@ public class MazeMaker {
             int nextCell = r.nextInt(unvisited.size());
             Cell c = unvisited.get(nextCell);
             uncheckedCells.push(c);
-            removeWalls(c, currentCell);
+            removeWalls(currentCell, c);
             currentCell = c;
-            currentCell.setBeenVisited(true);
+            //currentCell.setBeenVisited(true);
             selectNextPath(currentCell);
         }
         //C1. select one at random.
@@ -81,7 +81,7 @@ public class MazeMaker {
     //   This method will check if c1 and c2 are adjacent.
     //   If they are, the walls between them are removed.
     private static void removeWalls(Cell c1, Cell c2) {
-        if (c1.getY() == c2.getY() &&  Math.abs(c1.getX()-c2.getX()) == 1) {
+        if (c1.getY() == c2.getY() && Math.abs(c1.getX() - c2.getX()) == 1) {
             if (c1.getX() > c2.getX()) {
                 c1.setWestWall(false);
                 c2.setEastWall(false);
@@ -103,11 +103,31 @@ public class MazeMaker {
     //8. Complete the getUnvisitedNeighbors method
     //   Any unvisited neighbor of the passed in cell gets added
     //   to the ArrayList
-    private static ArrayList<Cell> getUnvisitedNeighbors(Cell c) {
+    private static ArrayList<Cell> getUnvisitedNeighbors(Cell centerCell) {
         ArrayList<Cell> allUnvisitedNeighbors = new ArrayList<>();
-        if (!c.hasBeenVisited()) {
-            //todo: complete this logic
-            allUnvisitedNeighbors.add(c);
+        if (centerCell.getX() > 0) {
+            Cell leftNeighbor = maze.getCell(centerCell.getX() - 1, centerCell.getY());
+            if (!leftNeighbor.hasBeenVisited()) {
+                allUnvisitedNeighbors.add(leftNeighbor);
+            }
+        }
+        if (centerCell.getX() < width - 1) {
+            Cell rightNeighbor = maze.getCell(centerCell.getX() + 1, centerCell.getY());
+            if (!rightNeighbor.hasBeenVisited()) {
+                allUnvisitedNeighbors.add(rightNeighbor);
+            }
+        }
+        if (centerCell.getY() > 0) {
+            Cell topNeighbor = maze.getCell(centerCell.getX(), centerCell.getY() - 1);
+            if (!topNeighbor.hasBeenVisited()) {
+                allUnvisitedNeighbors.add(topNeighbor);
+            }
+        }
+        if (centerCell.getY() < height - 1) {
+            Cell bottomNeighbor = maze.getCell(centerCell.getX(), centerCell.getY() + 1);
+            if (!bottomNeighbor.hasBeenVisited()) {
+                allUnvisitedNeighbors.add(bottomNeighbor);
+            }
         }
         return allUnvisitedNeighbors;
     }
